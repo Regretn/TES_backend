@@ -34,6 +34,7 @@ class Evaluation extends Model
         'comment',
         'user_id',
         'user_type',
+        'user_role'
 
 
     ];

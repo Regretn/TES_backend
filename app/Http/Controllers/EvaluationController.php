@@ -16,8 +16,8 @@ class EvaluationController extends Controller
     }
     public function show($id)
     {
-        $evaluation = Evaluation::all()->where('id', '=', $id)->first();
-        return new EvaluationResource($evaluation);
+        $evaluations = Evaluation::where('teacher_id', '=', $id)->get();
+        return EvaluationResource::collection($evaluations);
     }
     public function store($id, Request $request)
     {

@@ -14,7 +14,34 @@ class EvaluationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $total = $this->count('q1') * 5;
+        $percentages = [];
+
+        // Calculate percentage for each question
+        for ($i = 1; $i <= 20; $i++) {
+            $sum = $this->sum('q' . $i);
+            $totalScore = $this->count('q' . $i);
+            $percentage = $totalScore > 0 ? ($sum / $total) * 100 : 0;
+            $percentages['percentage_q' . $i] = $percentage;
+        }
+
+        // Categorize questions into 4 groups
+        $categories = [
+            'category_1' => array_slice($percentages, 0, 5),
+            'category_2' => array_slice($percentages, 5, 5),
+            'category_3' => array_slice($percentages, 10, 5),
+            'category_4' => array_slice($percentages, 15, 5),
+        ];
+
+        // Calculate percentage for each category
+        foreach ($categories as $key => $category) {
+            $sum = array_sum($category);
+            $totalScore = count($category);
+            $percentage = $totalScore > 0 ? ($sum / $totalScore) : 0;
+            $categories[$key] = $percentage;
+        }
+
+        return array_merge([
             'id' => $this->id,
             'q1' => $this->q1,
             'q2' => $this->q2,
@@ -39,10 +66,7 @@ class EvaluationResource extends JsonResource
             'comment' => $this->comment,
             'teacher_id' => $this->teacher_id,
             'total_score' => $this->total_score,
-            'user_id' => $this->user_type,
-
-
-
-        ];
+            'user_id' => $this->user_id,
+        ], $percentages, $categories);
     }
 }

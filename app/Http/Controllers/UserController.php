@@ -7,16 +7,22 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class UserController extends Controller
 {
     public function index()
     {
+        $auth = Auth::user();
         return new UserCollection(User::all());
     }
 
+
+
     public function show($id)
     {
+
         $users = User::all()->where('id', '=', $id)->first();
         return new UserResource($users);
     }
@@ -34,6 +40,8 @@ class UserController extends Controller
         $users->section_id = $request->sectionId;
         $users->role_id = '2';
 
+
+
         if ($users->save()) {
             return response()->json(['message' => 'Successfully store'])->setStatusCode(200);
         }
@@ -46,12 +54,12 @@ class UserController extends Controller
         $users = User::all()->where('id', '=', $id)->first();
         $users->teacher_id = $request->teacherId;
         $users->user_name = $request->userName;
-        $users->user_name = $request->password;
+        $users->password = $request->password;
         $users->email = $request->email;
         $users->image = $request->image;
         $users->description = $request->description;
         $users->section_id = $request->sectionId;
-        $users->role_id = $request->roleID;
+        $users->role_id = '2';
 
         if ($users->save()) {
             return response()->json(['message' => 'Successfully updated'])->setStatusCode(200);

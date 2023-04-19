@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable =
     [
@@ -24,7 +24,6 @@ class User extends Authenticatable
         'description',
         'section_id',
         'section_type',
-
     ];
 
     protected $hidden = [
