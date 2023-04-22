@@ -14,11 +14,37 @@ class EvaluationController extends Controller
     {
         return new EvaluationCollection(Evaluation::all());
     }
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $evaluations = Evaluation::where('teacher_id', '=', $id)->get();
+        $evaluations = Evaluation::where('teacher_id', '=', $id);
+
+        if ($request->has('year')) {
+            $year = $request->input('year');
+            $evaluations->whereYear('created_at', '=', $year);
+        } else {
+            $evaluations->whereYear('created_at', '=', date('Y'));
+        }
+
+        $evaluations = $evaluations->get();
         return EvaluationResource::collection($evaluations);
     }
+
+
+    // public function show(Request $request, $id)
+    // {
+
+    //     $evaluations = Evaluation::where('teacher_id', '=', $id);
+
+    //     if ($request->has('year')) {
+    //         $year = $request->input('year');
+    //         $evaluations->whereYear('created_at', '=', $year);
+    //     } else {
+    //         $evaluations->whereYear('created_at', '=', date('Y'));
+    //     }
+
+    //     $evaluations = $evaluations->get();
+    //     return EvaluationResource::collection($evaluations);
+    // }
     public function store($id, Request $request)
     {
         $user_eval = new Evaluation;

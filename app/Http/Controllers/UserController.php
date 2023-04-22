@@ -14,12 +14,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        $auth = Auth::user();
         return new UserCollection(User::all());
     }
-
-
-
     public function show($id)
     {
 

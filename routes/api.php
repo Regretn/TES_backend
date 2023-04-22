@@ -9,7 +9,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\CriteriaDataController;
+use App\Http\Controllers\DateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,8 @@ Route::group(['namespace' => "App\Http\Controllers",], function () {
     Route::apiResource('user', UserController::class);
     Route::apiResource('role', RoleController::class);
     Route::apiResource('section', SectionController::class);
+    Route::apiResource('criteria', CriteriaDataController::class);
+    Route::apiResource('year', DateController::class);
 });
 Route::middleware('auth')->group(function () {
 
