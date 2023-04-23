@@ -12,7 +12,8 @@ class SectionController extends Controller
 {
     public function index()
     {
-        return new SectionCollection(Section::all());
+        $sections = Section::pluck('section_name', 'id');
+        return response()->json(['data' => $sections]);
     }
 
 

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\StudentAuthController;
+use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth::sanctum');
+Route::post('/student_login', [StudentLoginController::class, 'register']);
 
 
 Route::group(['namespace' => "App\Http\Controllers",], function () {
