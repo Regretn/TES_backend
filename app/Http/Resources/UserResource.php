@@ -12,8 +12,10 @@ class UserResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
+        $evaluated = $this->resource['evaluated'] ?? 0;
+
         return [
             'id' => $this->id,
             'teacher_name' => $this->teacher_id,
@@ -23,7 +25,7 @@ class UserResource extends JsonResource
             'image' => $this->image,
             'description' => $this->description,
             'section_id' => $this->section_id,
-            'section_id' => $this->section_id
+            'evaluated' => $evaluated
         ];
     }
 }

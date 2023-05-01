@@ -39,7 +39,7 @@ class User extends Authenticatable
     }
     public function sections()
     {
-        return $this->belongsTo(Section::class);
+        return $this->belongsToMany(Section::class);
     }
     public function evaluations()
     {

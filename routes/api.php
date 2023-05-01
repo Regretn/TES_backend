@@ -13,6 +13,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CriteriaDataController;
 use App\Http\Controllers\DateController;
+use App\Http\Controllers\TeacherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,11 +33,11 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth::sanctum');
 Route::post('/student_login', [StudentLoginController::class, 'register']);
 
-
 Route::group(['namespace' => "App\Http\Controllers",], function () {
     Route::apiResource('evaluation', EvaluationController::class);
     Route::apiResource('student', StudentController::class);
     Route::apiResource('user', UserController::class);
+    Route::apiResource('teacher', TeacherController::class);
     Route::apiResource('role', RoleController::class);
     Route::apiResource('section', SectionController::class);
     Route::apiResource('criteria', CriteriaDataController::class);

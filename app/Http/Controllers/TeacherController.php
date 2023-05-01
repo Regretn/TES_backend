@@ -12,7 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
-class UserController extends Controller
+class TeacherController extends Controller
 {
     public function index()
     {
@@ -20,10 +20,29 @@ class UserController extends Controller
     }
     public function show($id)
     {
+        $student = Student::where('student_lrn', $id)->first();
 
-        $users = User::all()->where('id', '=', $id)->first();
-        return new UserResource($users);
+        if (!$student) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+
+        $users = User::whereHas('sections', function ($query) use ($student) {
+            $query->where('section_id', $student->section_id);
+        })->get();
+
+        $evaluatedUsers = Evaluation::where('student_id', $student->student_lrn)
+            ->whereIn('user_id', $users->pluck('id'))
+            ->whereYear('created_at', date('Y'))
+            ->pluck('user_id')
+            ->toArray();
+
+        foreach ($users as $user) {
+            $user->evaluated = in_array($user->id, $evaluatedUsers) ? 1 : 0;
+        }
+
+        return response()->json(['data' => $users]);
     }
+
 
 
 

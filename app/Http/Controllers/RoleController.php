@@ -17,7 +17,6 @@ class RoleController extends Controller
     public function show($id)
     {
         $orders = Role::all()->where('id', '=', $id)->first();
-        // return new RoleResource($orders);
         return $orders;
     }
 

@@ -13,7 +13,13 @@ class Role extends Model
     [
         'user_id',
         'user_type',
+
     ];
+    protected $casts = [
+        'user_type' => 'string',
+    ];
+
+
 
     public function users()
     {

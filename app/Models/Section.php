@@ -21,6 +21,6 @@ class Section extends Model
     }
     public function users()
     {
-        return $this->hasMany(Student::class);
+        return $this->belongsToMany(Student::class);
     }
 }

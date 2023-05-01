@@ -16,20 +16,43 @@ class EvaluationResource extends JsonResource
     {
         $percentages = [];
         $categories = [];
-
         $year = $request->input('year') ?? date('Y');
-
+        $role = $request->input('user_type');
+        $teacherId = $this->resource->teacher_id;
         if (!is_null($this->resource)) {
-            $total = $this->resource->whereYear('created_at', $year)->count('q1') * 5;
+            if (is_null($role)) {
+                $total = $this->resource->whereYear('created_at', $year)->where('teacher_id', $teacherId)
+                    ->count('q1') * 5;
+            } else {
+                $total = $this->resource->whereYear('created_at', $year)
+                    ->where('user_type', $role)
+                    ->where('teacher_id', $teacherId)
+                    ->count('q1') * 5;
+            }
 
             for ($i = 1; $i <= 20; $i++) {
-                $sum = $this->whereYear('created_at', $year)->sum('q' . $i);
-                $totalScore = $this->whereYear('created_at', $year)->count('q' . $i);
+                if (is_null($role)) {
+                    $sum = $this->whereYear('created_at', $year)->where('teacher_id', $teacherId)
+                        ->sum('q' . $i);
+                    $totalScore = $this->whereYear('created_at', $year)
+                        ->count('q' . $i);
+                } else {
+                    $sum = $this->whereYear('created_at', $year)
+                        ->where('user_type', $role)
+                        ->where('teacher_id', $teacherId)
+                        ->sum('q' . $i);
+                    $totalScore = $this->whereYear('created_at', $year)
+                        ->where('user_type', $role)
+                        ->where('teacher_id', $teacherId)
+                        ->count('q' . $i);
+                }
+
                 $percentage = $totalScore > 0 ? ($sum / $total) * 100 : 0;
                 $percentages['percentage_q' . $i] = $percentage;
             }
 
-            // Categorize questions into 4 groups
+
+
             $categories = [
                 'category_1' => array_slice($percentages, 0, 5),
                 'category_2' => array_slice($percentages, 5, 5),
@@ -37,7 +60,6 @@ class EvaluationResource extends JsonResource
                 'category_4' => array_slice($percentages, 15, 5),
             ];
 
-            // Calculate percentage for each category
             foreach ($categories as $key => $category) {
                 $sum = array_sum($category);
                 $totalScore = count($category);
@@ -72,6 +94,7 @@ class EvaluationResource extends JsonResource
             'teacher_id' => $this->teacher_id,
             'total_score' => $this->total_score,
             'user_id' => $this->user_id,
+            'user_type' => $this->user_type,
             'created_at' => $this->created_at,
         ], $percentages, $categories);
     }

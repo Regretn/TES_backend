@@ -38,6 +38,11 @@ class Evaluation extends Model
 
 
     ];
+    public function setCreatedAtAttribute($value)
+    {
+        $this->attributes['created_at'] = $value;
+        $this->attributes['year'] = $value->format('Y');
+    }
 
     public function students()
     {

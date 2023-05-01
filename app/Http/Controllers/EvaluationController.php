@@ -16,6 +16,7 @@ class EvaluationController extends Controller
     }
     public function show(Request $request, $id)
     {
+
         $evaluations = Evaluation::where('teacher_id', '=', $id);
 
         if ($request->has('year')) {
@@ -24,6 +25,14 @@ class EvaluationController extends Controller
         } else {
             $evaluations->whereYear('created_at', '=', date('Y'));
         }
+
+        if ($request->has('user_type')) {
+            $role = $request->input('user_type');
+            $evaluations->where('user_type', '=', $role);
+        } else {
+            $evaluations->whereIn('user_type', [1, 2, 3]);
+        }
+
 
         $evaluations = $evaluations->get();
         return EvaluationResource::collection($evaluations);
@@ -45,11 +54,9 @@ class EvaluationController extends Controller
     //     $evaluations = $evaluations->get();
     //     return EvaluationResource::collection($evaluations);
     // }
-    public function store($id, Request $request)
+    public function store(Request $request)
     {
         $user_eval = new Evaluation;
-        $id = Auth::user()->id;
-        $role = Auth::user()->role_id;
 
         $user_eval->q1 = $request->q1;
         $user_eval->q2 = $request->q2;
@@ -72,9 +79,12 @@ class EvaluationController extends Controller
         $user_eval->q19 = $request->q19;
         $user_eval->q20 = $request->q20;
         $user_eval->comment = $request->comment;
-        $user_eval->total_score = $request->totalStore;
-        $user_eval->user_id = $id;
-        $user_eval->user_type = $role;
+        $user_eval->total_score = $request->total_score;
+        $user_eval->teacher_id = $request->teacher_id;
+        $user_eval->student_id = $request->student_id;
+        $user_eval->user_id = $request->user_id;
+        $user_eval->user_type = $request->user_type;
+
 
         if ($user_eval->save()) {
             return response()->json(['message' => 'Successfully Stored'])->setStatusCode(200);
