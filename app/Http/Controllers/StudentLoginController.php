@@ -27,21 +27,24 @@ class StudentLoginController extends Controller
         ]);
 
         Auth::login($student);
-        $token = $student->createToken('auth_token')->plainTextToken;
-        return response()->json(['token' => $token], 200);
-        return response()->json(['message' => 'Registration successful'], 200);
+        $token = $student->createToken('auth_token');
+
+        $student->update([
+            'token' => $token->plainTextToken
+        ]);
+
         $responseData = [
             'id' => $student->id,
             'lrn' => $student->student_lrn,
             'section_id' => $student->section_id,
-            'token' => $token
+            'token' => $token->plainTextToken
         ];
+
         return response()->json($responseData, 200);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
 
         return response()->json([
             'message' => 'Successfully logged out'

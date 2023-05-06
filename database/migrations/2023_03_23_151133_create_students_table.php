@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('student_lrn');
             $table->integer('section_id')->default(0);
             $table->string('user_type')->default(3);
+            $table->text('token')->nullable();
             $table->timestamps();
         });
     }

@@ -22,7 +22,6 @@ class Kernel extends ConsoleKernel
     }
     protected $commands = [
         \App\Console\Commands\DeleteOldStudents::class,
-
     ];
     protected function schedule(Schedule $schedule)
     {
