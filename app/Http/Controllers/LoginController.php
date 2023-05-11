@@ -42,8 +42,21 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $sentToken = $request->input('token');
+
+        $user = User::where('token', $sentToken)->first();
+
+        if ($user) {
+            $user->token = null;
+            $user->save();
+
+            return response()->json([
+                'message' => 'Successfully logged out'
+            ], 200);
+        }
+
         return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+            'message' => 'Invalid or expired token'
+        ], 401);
     }
 }

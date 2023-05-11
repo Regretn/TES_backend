@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth::sanctum');
+Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/student_login', [StudentLoginController::class, 'register']);
 Route::post('/student_logout', [StudentLoginController::class, 'logout']);
 
