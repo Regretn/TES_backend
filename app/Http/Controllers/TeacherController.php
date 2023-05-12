@@ -31,9 +31,9 @@ class TeacherController extends Controller
         })->get();
 
         $evaluatedUsers = Evaluation::where('student_id', $student->student_lrn)
-            ->whereIn('user_id', $users->pluck('id'))
+            ->whereIn('teacher_id', $users->pluck('id'))
             ->whereYear('created_at', date('Y'))
-            ->pluck('user_id')
+            ->pluck('teacher_id')
             ->toArray();
 
         foreach ($users as $user) {

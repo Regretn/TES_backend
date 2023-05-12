@@ -36,7 +36,7 @@ return new class extends Migration
             $table->string('comment')->nullable();
             $table->integer('total_score');
             $table->integer('teacher_id')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('user_type');

@@ -70,7 +70,7 @@ class EvaluationFactory extends Factory
             'comment' => fake()->sentence(),
             'total_score' => $total,
             'teacher_id' => DB::table('users')->inRandomOrder()->value('id'),
-            'user_id' => fake()->randomElement(range(1, 25)),
+            'user_id' => fake()->randomElement(range(1, 17)),
             'user_type' => $userType,
         ];
     }

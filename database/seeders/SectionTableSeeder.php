@@ -16,16 +16,12 @@ class SectionTableSeeder extends Seeder
         $section = [
             ['section_name' => '7-Gold'],
             ['section_name' => '7-Emerald'],
-            ['section_name' => '7-Diamond'],
             ['section_name' => '8-Mercury'],
             ['section_name' => '8-Venus'],
-            ['section_name' => '8-Earth'],
             ['section_name' => '9-Aspen'],
             ['section_name' => '9-Birch'],
-            ['section_name' => '9-Narra'],
             ['section_name' => '10-Orchids'],
             ['section_name' => '10-Fold'],
-            ['section_name' => '10-Lilies'],
         ];
 
         DB::table('sections')->insert($section);
