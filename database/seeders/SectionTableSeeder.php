@@ -14,19 +14,20 @@ class SectionTableSeeder extends Seeder
     public function run(): void
     {
         $section = [
-            ['section_name' => '7-Gold'],
-            ['section_name' => '7-Emerald'],
-            ['section_name' => '7-Diamond'],
-            ['section_name' => '8-Mercury'],
-            ['section_name' => '8-Venus'],
-            ['section_name' => '8-Earth'],
-            ['section_name' => '9-Aspen'],
-            ['section_name' => '9-Birch'],
-            ['section_name' => '9-Narra'],
-            ['section_name' => '10-Orchids'],
-            ['section_name' => '10-Fold'],
-            ['section_name' => '10-Lilies'],
+            ['section_name' => '7-Gold', 'grade' => 7],
+            ['section_name' => '7-Emerald', 'grade' => 7],
+            ['section_name' => '7-Diamond', 'grade' => 7],
+            ['section_name' => '8-Mercury', 'grade' => 8],
+            ['section_name' => '8-Venus', 'grade' => 8],
+            ['section_name' => '8-Earth', 'grade' => 8],
+            ['section_name' => '9-Aspen', 'grade' => 9],
+            ['section_name' => '9-Birch', 'grade' => 9],
+            ['section_name' => '9-Narra', 'grade' => 9],
+            ['section_name' => '10-Orchids', 'grade' => 10],
+            ['section_name' => '10-Fold', 'grade' => 10],
+            ['section_name' => '10-Lilies', 'grade' => 10],
         ];
+
 
         DB::table('sections')->insert($section);
     }

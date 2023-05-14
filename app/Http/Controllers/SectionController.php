@@ -12,7 +12,7 @@ class SectionController extends Controller
 {
     public function index()
     {
-        $sections = Section::pluck('section_name', 'id');
+        $sections = Section::all('section_name', 'id', 'grade');
         return response()->json(['data' => $sections]);
     }
 

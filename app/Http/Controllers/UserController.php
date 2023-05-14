@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
+use App\Models\SectionUser;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-use App\Models\Evaluation;
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
@@ -18,6 +18,9 @@ class UserController extends Controller
     {
         return new UserCollection(User::all());
     }
+
+
+
     public function show($id)
     {
 
@@ -26,35 +29,32 @@ class UserController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
-        $employee = new User();
-
         $users = new User;
         $users->teacher_id = $request->teacherId;
         $users->user_name = $request->userName;
         $users->password = $request->password;
         $users->email = $request->email;
+        $users->image = $request->image;
         $users->description = $request->description;
-        $users->section_id = $request->sectionId;
         $users->role_id = '2';
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move('uploads/teacherFol', $filename);
-            $users->image = $filename;
-        } else {
-            return response()->json(['message' => 'No image file uploaded'])->setStatusCode(400);
-        }
-
-
-
         if ($users->save()) {
+            // handle multiple sections
+            $sections = $request->input('sections');
+            if ($sections) {
+                foreach ($sections as $sectionId) {
+                    $SectionUser = new SectionUser;
+                    $SectionUser->user_id = $users->id;
+                    $SectionUser->section_id = $sectionId;
+                    $SectionUser->save();
+                }
+            }
+
             return response()->json(['message' => 'Successfully store'])->setStatusCode(200);
         }
+
         return response()->json(['message' => 'Error, cannot save users'])->setStatusCode(400);
     }
 
