@@ -5,42 +5,41 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\Evaluation;
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
-class TeacherController extends Controller
+class TeacherPeerController extends Controller
 {
     public function index()
     {
-        return new UserCollection(User::all());
+        $teacher = User::where('role_id', 2)->get();
+        return new UserCollection($teacher);
     }
     public function show($id)
     {
-        $student = Student::where('student_lrn', $id)->first();
+        $teacher = User::where('id', $id)->first();
 
-        if (!$student) {
-            return response()->json(['message' => 'Student not found'], 404);
+        if (!$teacher) {
+            return response()->json(['message' => 'Teacher not found'], 404);
         }
 
-        $users = User::whereHas('sections', function ($query) use ($student) {
-            $query->where('section_id', $student->section_id);
-        })->get();
+        $teachers = User::where('role_id', 2)
+            ->whereNotIn('id', [$id])
+            ->get();
 
-        $evaluatedUsers = Evaluation::where('student_id', $student->student_lrn)
-            ->whereIn('teacher_id', $users->pluck('id'))
+        $evaluatedStudentIds = Evaluation::where('user_id', $id)
             ->whereYear('created_at', date('Y'))
-            ->pluck('teacher_id')
-            ->toArray();
+            ->pluck('teacher_id');
 
-        foreach ($users as $user) {
-            $user->evaluated = in_array($user->id, $evaluatedUsers) ? 1 : 0;
-        }
+        $evalteacher = $teachers->map(function ($student) use ($evaluatedStudentIds) {
+            $student->evaluated = $evaluatedStudentIds->contains($student->id) ? 1 : 0;
+            return $student;
+        });
 
-        return response()->json(['data' => $users]);
+        return response()->json(['data' => $evalteacher]);
     }
 
 

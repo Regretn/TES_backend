@@ -33,15 +33,16 @@ return new class extends Migration
             $table->integer('q18');
             $table->integer('q19');
             $table->integer('q20');
-            $table->string('comment');
+            $table->string('comment')->nullable();
             $table->integer('total_score');
             $table->integer('teacher_id')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('user_type');
             $table->foreign('user_type')->references('id')->on('roles');
             $table->unique(['user_id', 'student_id', 'year']);
+            $table->unique(['user_id', 'teacher_id', 'year']);
             $table->timestamps();
             $table->integer('year')->nullable();
         });

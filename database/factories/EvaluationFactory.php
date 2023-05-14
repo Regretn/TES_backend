@@ -15,6 +15,8 @@ class EvaluationFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    private static $userTypeCounter = 1;
+
     public function definition(): array
     {
         $user = UserFactory::new()->create();
@@ -39,6 +41,9 @@ class EvaluationFactory extends Factory
         $q19 = fake()->randomElement([1, 2, 3, 4, 5]);
         $q20 = fake()->randomElement([1, 2, 3, 4, 5]);
         $total = $q1 + $q2 + $q3 + $q4 + $q5 + $q6 + $q7 + $q8 + $q9 + $q10 + $q11 + $q12 + $q13 + $q14 + $q15 + $q16 + $q17 + $q18 + $q19 + $q20;
+        $userType = self::$userTypeCounter % 3 + 1;
+        self::$userTypeCounter++;
+
 
 
         return [
@@ -65,8 +70,8 @@ class EvaluationFactory extends Factory
             'comment' => fake()->sentence(),
             'total_score' => $total,
             'teacher_id' => DB::table('users')->inRandomOrder()->value('id'),
-            'user_id' => fake()->randomElement(range(1, 25)),
-            'user_type' => intval(fake()->randomElement(range(1, 3))),
+            'user_id' => fake()->randomElement(range(1, 17)),
+            'user_type' => $userType,
         ];
     }
 }

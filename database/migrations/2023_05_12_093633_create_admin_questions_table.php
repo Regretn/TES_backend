@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('admin_questions', function (Blueprint $table) {
             $table->id();
-            $table->integer('student_lrn');
-            $table->integer('section_id')->default(0);
-            $table->string('user_type')->default(3);
-            $table->text('token')->nullable();
-            $table->timestamps();
+            $table->string("admin_question", 255)->nullable();
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('admin_questions');
     }
 };

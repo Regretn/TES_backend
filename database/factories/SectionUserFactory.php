@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use App\Models\Section;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\DB;
 
 class SectionUserFactory extends Factory
 {
@@ -35,20 +36,21 @@ class SectionUserFactory extends Factory
 
         $combinations = [];
 
-        foreach ($sections as $section) {
-            $usersInSection = array_slice($users, 0, 8);
-            foreach ($usersInSection as $user) {
+        foreach ($users as $user) {
+            $userSections = $this->faker->randomElements($sections, 8);
+            foreach ($userSections as $section) {
                 $combinations[] = ['user_id' => $user, 'section_id' => $section];
             }
-            $users = array_slice($users, 8);
         }
-
         return $this->afterCreating(function ($pivot) use ($combinations) {
             foreach ($combinations as $combination) {
-                if ($combination['user_id'] !== $pivot->user_id && $combination['section_id'] !== $pivot->section_id) {
-                    $pivot->user_id = $combination['user_id'];
-                    $pivot->section_id = $combination['section_id'];
-                    $pivot->save();
+                $existingCombination = DB::table('section_user')
+                    ->where('user_id', $combination['user_id'])
+                    ->where('section_id', $combination['section_id'])
+                    ->exists();
+
+                if (!$existingCombination) {
+                    DB::table('section_user')->insert($combination);
                 }
             }
         });

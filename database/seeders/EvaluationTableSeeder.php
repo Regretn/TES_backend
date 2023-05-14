@@ -13,6 +13,6 @@ class EvaluationTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Evaluation::factory()->count(50)->create();
+        Evaluation::factory()->count(100)->create();
     }
 }
