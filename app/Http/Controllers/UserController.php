@@ -19,13 +19,25 @@ class UserController extends Controller
         return new UserCollection(User::all());
     }
 
-
-
     public function show($id)
     {
+        $user = User::find($id);
+        $sections = $user->sections;
 
-        $users = User::all()->where('id', '=', $id)->first();
-        return new UserResource($users);
+        // Create an array to store section details
+        $sectionDetails = [];
+
+        foreach ($sections as $section) {
+            $sectionDetails[] = [
+                'id' => $section->id,
+                'section_name' => $section->section_name,
+            ];
+        }
+
+        $userData = $user->toArray();
+        $userData['sections'] = $sectionDetails;
+
+        return response()->json(['data' => $userData]);
     }
 
 
