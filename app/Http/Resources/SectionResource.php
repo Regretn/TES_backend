@@ -16,7 +16,14 @@ class SectionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'section_id' => $this->section_name
+            'teacher_name' => $this->teacher_name,
+            'user_name' => $this->user_name,
+            'password' => $this->password,
+            'email' => $this->email,
+            'image' => $this->image,
+            'description' => $this->description,
+            'section' => SectionResource::collection($this->whenLoaded('sections')),
+            'evaluated' => $this->evaluated,
         ];
     }
 }
