@@ -15,9 +15,9 @@ class Section extends Model
         'section_name',
     ];
 
-    public function student()
+    public function students()
     {
-        return $this->hasOne(Student::class);
+        return $this->hasMany(Student::class);
     }
     public function users()
     {

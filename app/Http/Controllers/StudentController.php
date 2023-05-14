@@ -18,7 +18,7 @@ class StudentController extends Controller
 
     public function show($id)
     {
-        $student = Student::all()->where('id', '=', $id)->first();
+        $student = Student::find($id);
         return new StudentResource($student);
     }
 

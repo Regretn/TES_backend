@@ -9,11 +9,18 @@ use App\Models\TeacherQuestion;
 
 class TeacherQuestionController extends Controller
 {
-    public function index()
+    public function show($id)
     {
-        $questions = TeacherQuestion::all();
-        return new TeacherQuestionCollection($questions);
+        $user = User::with('sections')->whereHas('sections')->find($id);
+
+        if (!$user) {
+            // User not found
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return new UserResource($user);
     }
+
 
     public function store(Request $request)
     {

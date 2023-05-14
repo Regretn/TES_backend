@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->integer('student_lrn');
-            $table->integer('section_id')->default(0);
+            $table->unsignedBigInteger('section_id');
+            $table->foreign('section_id')->references('id')->on('roles');
             $table->string('user_type')->default(3);
             $table->text('token')->nullable();
             $table->timestamps();
