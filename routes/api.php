@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminEvalController;
+use App\Http\Controllers\AdminQuestionController;
+use App\Http\Controllers\CriteriaController;
 use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
@@ -14,8 +16,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CriteriaDataController;
 use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\DateController;
+use App\Http\Controllers\StudentQuestionController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TeacherPeerController;
+use App\Http\Controllers\TeacherQuestionController;
+use App\Models\AdminQuestion;
+use App\Models\StudentQuestion;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +58,10 @@ Route::apiResource('student', StudentController::class);
 Route::apiResource('admin_eval', AdminEvalController::class);
 Route::apiResource('peer_eval', TeacherPeerController::class);
 Route::apiResource('dashboard', DashBoardController::class);
-
+Route::apiResource('teacher_question', TeacherQuestionController::class);
+Route::apiResource('admin_question', AdminQuestionController::class);
+Route::apiResource('student_question', StudentQuestionController::class);
+Route::apiResource('criteria', CriteriaController::class);
 
 
 

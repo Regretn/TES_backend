@@ -27,7 +27,7 @@ class DashboardCollection extends ResourceCollection
         //total evaluatee
         $total_evaluatee_teacher = $this->collection->where('user_type', '=', 2)->groupBy('teacher_id')->count();
         $total_evaluatee_student = $this->collection->where('user_type', '=', 3)->groupBy('section_id')->count();
-        $total_evaluatee = $total_evaluatee_student + $total_evaluatee_teacher;
+        $total_evaluatee = $students + $total_evaluatee_teacher;
         $sections = [];
         $student_sections = Student::select('section_id')->distinct()->pluck('section_id');
 
