@@ -62,6 +62,11 @@ Route::apiResource('teacher_question', TeacherQuestionController::class);
 Route::apiResource('admin_question', AdminQuestionController::class);
 Route::apiResource('student_question', StudentQuestionController::class);
 Route::apiResource('criteria', CriteriaController::class);
+Route::post('/criteria/update', [CriteriaController::class, 'update']);
+Route::post('/teacher_question/update', [TeacherQuestionController::class, 'update']);
+Route::post('/admin_question/update', [AdminQuestionController::class, 'update']);
+Route::post('/student_question/update', [StudentQuestionController::class, 'update']);
+
 
 
 

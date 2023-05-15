@@ -30,18 +30,32 @@ class AdminQuestionController extends Controller
         $question = AdminQuestion::findOrFail($id);
         return new AdminQuestionResource($question);
     }
-    public function update(Request $request, string $id)
-    {
-        $question = AdminQuestion::findOrFail($id);
-        $question->admin_question = (string) $request->admin_question;
 
-        if ($question->save()) {
-            return response()->json(['message' => 'Successfully updated'], 200);
+    public function update(Request $request)
+    {
+        $request->validate([
+            'questions' => 'required|array',
+            'questions.*.id' => 'required|exists:admin_questions,id',
+            'questions.*.admin_question' => 'required|string|max:255',
+        ]);
+
+        $updatedQuestions = [];
+
+        foreach ($request->questions as $item) {
+            $question = AdminQuestion::find($item['id']);
+
+            if (!$question) {
+                return response()->json(['message' => 'Question not found'], 404);
+            }
+
+            $question->admin_question = $item['admin_question'];
+            $question->save();
+
+            $updatedQuestions[] = $question;
         }
 
-        return response()->json(['message' => 'Error, cannot update question'], 400);
+        return response()->json($updatedQuestions);
     }
-
 
     public function destroy(string $id)
     {
