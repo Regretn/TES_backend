@@ -5,9 +5,11 @@ namespace Database\Factories;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Faker\Provider\Image;
 
 class UserFactory extends Factory
 {
+
     /**
      * Define the model's default state.
      *
@@ -15,13 +17,15 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $this->faker->addProvider(new Image($this->faker));
+
         return [
-            'teacher_id' => fake()->unique()->numerify('########'),
-            'user_name' => fake()->name(),
+            'teacher_id' => $this->faker->unique()->numerify('########'),
+            'user_name' => $this->faker->name(),
             'password' => Hash::make('1234'),
-            'email' => fake()->unique()->safeEmail(),
-            'image' => null,
-            'role_id' => fake()->randomElement([1, 2]),
+            'email' => $this->faker->unique()->safeEmail(),
+            'image' => $this->faker->image('public/images', 400, 300, null, false),
+            'role_id' => $this->faker->randomElement([1, 2]),
         ];
     }
 }

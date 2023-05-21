@@ -90,15 +90,15 @@ class DashboardCollection extends ResourceCollection
                 $categories[$key] = $percentage;
             }
         }
-
         $data = [];
         foreach ($grouped as $teacher_id => $evaluations) {
             $count = $evaluations->count();
             $total_score = $evaluations->sum('total_score');
+            $total =  ($total_score / $count) * 100;
             $teacher_name = User::find($teacher_id)->user_name; // get the name of the teacher
 
             $data[] = [
-                'percentage of teacher' => $total_score / $count,
+                'percentage of teacher' => $total,
                 'sections' => $sections,
                 'categories' => $categories,
                 'percentage' => $percentages,
@@ -107,9 +107,15 @@ class DashboardCollection extends ResourceCollection
                 'total_teacher' => $teachers,
                 'teacher_name' => $teacher_name,
                 'total_evaluations' => $count,
-                'total_score' => $total_score,
+                'total_score' => $total,
             ];
         }
+
+        // Sort the $data array in descending order based on the 'percentage of teacher' value
+        usort($data, function ($a, $b) {
+            return $b['percentage of teacher'] <=> $a['percentage of teacher'];
+        });
+
 
 
         $sorted = collect($data)->sortByDesc('total_evaluations')->values()->all();

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('user_name')->nullable();
             $table->string('password');
             $table->string('email')->nullable();
-            $table->mediumText('image')->nullable();
+            $table->string('image')->nullable();
             $table->string('description')->nullable();
             $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')->references('id')->on('roles');

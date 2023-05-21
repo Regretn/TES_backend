@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('student_lrn');
             $table->unsignedBigInteger('section_id');
-            $table->foreign('section_id')->references('id')->on('roles');
+            $table->foreign('section_id')->references('id')->on('sections');
             $table->string('user_type')->default(3);
             $table->text('token')->nullable();
             $table->timestamps();

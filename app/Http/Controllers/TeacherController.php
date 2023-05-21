@@ -18,6 +18,7 @@ class TeacherController extends Controller
     {
         return new UserCollection(User::all());
     }
+
     public function show($id)
     {
         $student = Student::where('student_lrn', $id)->first();
@@ -38,6 +39,12 @@ class TeacherController extends Controller
 
         foreach ($users as $user) {
             $user->evaluated = in_array($user->id, $evaluatedUsers) ? 1 : 0;
+
+            if ($user->image) {
+                $user->image = asset('images/' . $user->image);
+            } else {
+                $user->image = asset('images/default.jpg');
+            }
         }
 
         return response()->json(['data' => $users]);

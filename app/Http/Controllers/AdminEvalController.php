@@ -30,16 +30,23 @@ class AdminEvalController extends Controller
 
         $evaluatedStudentIds = Evaluation::where('user_id', $id)
             ->whereYear('created_at', date('Y'))
-            ->pluck('teacher_id');
+            ->pluck('student_id')
+            ->toArray();
 
         $students = $students->map(function ($student) use ($evaluatedStudentIds) {
-            $student->evaluated = $evaluatedStudentIds->contains($student->id) ? 1 : 0;
+            $student->evaluated = in_array($student->id, $evaluatedStudentIds) ? 1 : 0;
+
+            if ($student->image) {
+                $student->image = asset('images/' . $student->image);
+            } else {
+                $student->image = asset('images/default.jpg');
+            }
+
             return $student;
         });
 
         return response()->json(['data' => $students]);
     }
-
 
 
 
