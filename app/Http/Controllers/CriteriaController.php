@@ -39,25 +39,35 @@ class CriteriaController extends Controller
 
         return new CriteriaResource($criteria);
     }
-
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $request->validate([
-            'criteria_name' => 'required|string|max:255',
+            'criteria' => 'required|array',
+            'criteria.*.id' => 'required|exists:criterias,id',
+            'criteria.*.criteria_name' => 'required|string|max:255',
         ]);
 
-        $criteria = Criteria::find($id);
+        $updatedCriteria = [];
 
-        if (!$criteria) {
-            return response()->json(['message' => 'Criteria not found'], 404);
+        foreach ($request->criteria as $item) {
+            $criteria = Criteria::find($item['id']);
+
+            if (!$criteria) {
+                return response()->json(['message' => 'Criteria not found'], 404);
+            }
+
+            $criteria->update([
+                'criteria_name' => $item['criteria_name'],
+            ]);
+
+            $updatedCriteria[] = $criteria;
         }
 
-        $criteria->update([
-            'criteria_name' => $request->criteria_name,
-        ]);
-
-        return response()->json($criteria);
+        return response()->json($updatedCriteria);
     }
+
+
+
 
     public function destroy($id)
     {

@@ -4,23 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\TeacherQuestionCollection;
 use App\Http\Resources\TeacherQuestionResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\TeacherQuestion;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TeacherQuestionController extends Controller
+
 {
-    public function show($id)
+    public function index()
     {
-        $user = User::with('sections')->whereHas('sections')->find($id);
-
-        if (!$user) {
-            // User not found
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        return new UserResource($user);
+        $questions = TeacherQuestion::all();
+        return new TeacherQuestionCollection($questions);
     }
-
 
     public function store(Request $request)
     {
@@ -38,16 +35,30 @@ class TeacherQuestionController extends Controller
         return new TeacherQuestionResource($question);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        $question = TeacherQuestion::findOrFail($id);
-        $question->teacher_question = (string) $request->teacher_question;
+        $request->validate([
+            'questions' => 'required|array',
+            'questions.*.id' => 'required|exists:teacher_questions,id',
+            'questions.*.teacher_question' => 'required|string|max:255',
+        ]);
 
-        if ($question->save()) {
-            return response()->json(['message' => 'Successfully updated'], 200);
+        $updatedQuestions = [];
+
+        foreach ($request->questions as $item) {
+            $question = TeacherQuestion::find($item['id']);
+
+            if (!$question) {
+                return response()->json(['message' => 'Question not found'], 404);
+            }
+
+            $question->teacher_question = $item['teacher_question'];
+            $question->save();
+
+            $updatedQuestions[] = $question;
         }
 
-        return response()->json(['message' => 'Error, cannot update question'], 400);
+        return response()->json($updatedQuestions);
     }
 
 

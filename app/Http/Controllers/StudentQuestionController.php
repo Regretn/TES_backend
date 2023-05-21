@@ -30,15 +30,33 @@ class StudentQuestionController extends Controller
         return new StudentQuestionResource($question);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        $users = StudentQuestion::all()->where('id', '=', $id)->first();
-        $users->student_question = $request->student_question;
-        if ($users->save()) {
-            return response()->json(['message' => 'Successfully updated'], 200);
+        $request->validate([
+            'questions' => 'required|array',
+            'questions.*.id' => 'required|exists:student_questions,id',
+            'questions.*.student_question' => 'required|string|max:255',
+        ]);
+
+        $updatedQuestions = [];
+
+        foreach ($request->questions as $item) {
+            $question = StudentQuestion::find($item['id']);
+
+            if (!$question) {
+                return response()->json(['message' => 'Question not found'], 404);
+            }
+
+            $question->student_question = $item['student_question'];
+            $question->save();
+
+            $updatedQuestions[] = $question;
         }
-        return response()->json(['message' => 'Error, cannot update'], 400);
+
+        return response()->json($updatedQuestions);
     }
+
+
 
     public function destroy(string $id)
     {
