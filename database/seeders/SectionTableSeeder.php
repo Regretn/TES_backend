@@ -24,6 +24,7 @@ class SectionTableSeeder extends Seeder
             ['section_name' => '10-Fold'],
         ];
 
+
         DB::table('sections')->insert($section);
     }
 }

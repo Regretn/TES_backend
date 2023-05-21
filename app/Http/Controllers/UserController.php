@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
+use App\Models\SectionUser;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-use App\Models\Evaluation;
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
@@ -18,62 +18,83 @@ class UserController extends Controller
     {
         return new UserCollection(User::all());
     }
+
     public function show($id)
     {
+        $user = User::find($id);
+        $sections = $user->sections;
 
-        $users = User::all()->where('id', '=', $id)->first();
-        return new UserResource($users);
+        // Create an array to store section details
+        $sectionDetails = [];
+
+        foreach ($sections as $section) {
+            $sectionDetails[] = [
+                'id' => $section->id,
+                'section_name' => $section->section_name,
+            ];
+        }
+
+        $userData = $user->toArray();
+        $userData['sections'] = $sectionDetails;
+
+        return response()->json(['data' => $userData]);
     }
-
 
 
     public function store(Request $request)
     {
-        $employee = new User();
-
         $users = new User;
-        $users->teacher_id = $request->teacherId;
-        $users->user_name = $request->userName;
-        $users->password = $request->password;
-        $users->email = $request->email;
-        $users->description = $request->description;
-        $users->section_id = $request->sectionId;
-        $users->role_id = '2';
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move('uploads/teacherFol', $filename);
-            $users->image = $filename;
-        } else {
-            return response()->json(['message' => 'No image file uploaded'])->setStatusCode(400);
-        }
-
-
-
-        if ($users->save()) {
-            return response()->json(['message' => 'Successfully store'])->setStatusCode(200);
-        }
-        return response()->json(['message' => 'Error, cannot save users'])->setStatusCode(400);
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        $users = User::all()->where('id', '=', $id)->first();
         $users->teacher_id = $request->teacherId;
         $users->user_name = $request->userName;
         $users->password = $request->password;
         $users->email = $request->email;
         $users->image = $request->image;
         $users->description = $request->description;
-        $users->section_id = $request->sectionId;
         $users->role_id = '2';
 
         if ($users->save()) {
+            // handle multiple sections
+            $sections = $request->input('sections');
+            if ($sections) {
+                foreach ($sections as $sectionId) {
+                    $SectionUser = new SectionUser;
+                    $SectionUser->user_id = $users->id;
+                    $SectionUser->section_id = $sectionId;
+                    $SectionUser->save();
+                }
+            }
+
+            return response()->json(['message' => 'Successfully store'])->setStatusCode(200);
+        }
+
+        return response()->json(['message' => 'Error, cannot save users'])->setStatusCode(400);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->teacher_id = $request->teacherId;
+        $user->user_name = $request->userName;
+        $user->password = $request->password;
+        $user->email = $request->email;
+        $user->image = $request->image;
+        $user->description = $request->description;
+        $user->role_id = '2';
+
+        if ($user->save()) {
+            // Update section_user pivot table
+            $sections = $request->input('sections');
+            if ($sections) {
+                $user->sections()->sync($sections);
+            } else {
+                // If no sections are provided, detach all existing section_user relationships
+                $user->sections()->detach();
+            }
+
             return response()->json(['message' => 'Successfully updated'])->setStatusCode(200);
         }
+
         return response()->json(['message' => 'Error, cannot update'])->setStatusCode(400);
     }
 

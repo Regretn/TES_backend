@@ -22,7 +22,9 @@ class StudentResource extends JsonResource
             'student_lrn' => $this->student_lrn,
             'section_id' => $this->section_id,
             'section_name' => $section ? $section->section_name : null,
-            'user_type' => $this->user_type
+            'user_type' => $this->user_type,
+            'user_date' => $this->created_at->format('Y-m H:i:s')
+
         ];
     }
 }

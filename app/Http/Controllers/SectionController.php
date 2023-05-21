@@ -12,53 +12,48 @@ class SectionController extends Controller
 {
     public function index()
     {
-        $sections = Section::pluck('section_name', 'id');
+        $sections = Section::all();
         return response()->json(['data' => $sections]);
     }
 
-
-
     public function show($id)
     {
-        $section = Section::all()->where('id', '=', $id)->first();
+        $section = Section::find($id);
         return new SectionResource($section);
     }
-
 
     public function store(Request $request)
     {
         $section = new Section();
-        $section->id = $request->id;
         $section->section_name = $request->sectionName;
 
-
         if ($section->save()) {
-            return response()->json(['message' => 'Successfully store'])->setStatusCode(200);
+            return response()->json(['message' => 'Successfully stored'])->setStatusCode(200);
         }
-        return response()->json(['message' => 'Error, cannot save users'])->setStatusCode(400);
-    }
 
+        return response()->json(['message' => 'Error, cannot save section'])->setStatusCode(400);
+    }
 
     public function update(Request $request, $id)
     {
-
-        $section = Section::all()->where('id', '=', $id)->first();
+        $section = Section::find($id);
         $section->section_name = $request->sectionName;
 
         if ($section->save()) {
-            return response()->json(['message' => 'Successfully save'])->setStatusCode(200);
+            return response()->json(['message' => 'Successfully updated'])->setStatusCode(200);
         }
-        return response()->json(['message' => 'Error, cannot update Section'])->setStatusCode(400);
+
+        return response()->json(['message' => 'Error, cannot update section'])->setStatusCode(400);
     }
-
-
 
     public function destroy($id)
     {
-        $section = Section::all()->where('id', '=', $id)->first();
+        $section = Section::find($id);
+
         if ($section->delete()) {
             return response()->json(['message' => 'Successfully deleted'])->setStatusCode(200);
         }
-        return response()->json(['message' => 'Error, cannot delete Section'])->setStatusCode(400);
+
+        return response()->json(['message' => 'Error, cannot delete section'])->setStatusCode(400);
     }
 }
