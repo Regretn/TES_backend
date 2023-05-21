@@ -73,19 +73,28 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $users = User::all()->where('id', '=', $id)->first();
-        $users->teacher_id = $request->teacherId;
-        $users->user_name = $request->userName;
-        $users->password = $request->password;
-        $users->email = $request->email;
-        $users->image = $request->image;
-        $users->description = $request->description;
-        $users->section_id = $request->sectionId;
-        $users->role_id = '2';
+        $user = User::findOrFail($id);
+        $user->teacher_id = $request->teacherId;
+        $user->user_name = $request->userName;
+        $user->password = $request->password;
+        $user->email = $request->email;
+        $user->image = $request->image;
+        $user->description = $request->description;
+        $user->role_id = '2';
 
-        if ($users->save()) {
+        if ($user->save()) {
+            // Update section_user pivot table
+            $sections = $request->input('sections');
+            if ($sections) {
+                $user->sections()->sync($sections);
+            } else {
+                // If no sections are provided, detach all existing section_user relationships
+                $user->sections()->detach();
+            }
+
             return response()->json(['message' => 'Successfully updated'])->setStatusCode(200);
         }
+
         return response()->json(['message' => 'Error, cannot update'])->setStatusCode(400);
     }
 
