@@ -15,7 +15,6 @@ class SectionController extends Controller
         $sections = Section::all()->sortBy(function ($section) {
             return intval(explode('-', $section->section_name)[0]);
         })->values();
-
         return response()->json(['data' => $sections]);
     }
 

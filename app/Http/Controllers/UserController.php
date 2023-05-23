@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 
 class UserController extends Controller
@@ -46,14 +47,13 @@ class UserController extends Controller
         $users = new User;
         $users->teacher_id = $request->teacherId;
         $users->user_name = $request->userName;
-        $users->password = $request->password;
+        $users->password = Hash::make($request->password);
         $users->email = $request->email;
         $users->image = $request->image;
         $users->description = $request->description;
         $users->role_id = '2';
 
         if ($users->save()) {
-            // handle multiple sections
             $sections = $request->input('sections');
             if ($sections) {
                 foreach ($sections as $sectionId) {

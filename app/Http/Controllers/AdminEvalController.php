@@ -30,7 +30,7 @@ class AdminEvalController extends Controller
 
         $evaluatedStudentIds = Evaluation::where('user_id', $id)
             ->whereYear('created_at', date('Y'))
-            ->pluck('student_id')
+            ->pluck('teacher_id')
             ->toArray();
 
         $students = $students->map(function ($student) use ($evaluatedStudentIds) {
