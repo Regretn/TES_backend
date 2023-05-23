@@ -12,9 +12,13 @@ class SectionController extends Controller
 {
     public function index()
     {
-        $sections = Section::all();
+        $sections = Section::all()->sortBy(function ($section) {
+            return intval(explode('-', $section->section_name)[0]);
+        })->values();
+
         return response()->json(['data' => $sections]);
     }
+
 
     public function show($id)
     {
@@ -25,7 +29,7 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $section = new Section();
-        $section->section_name = $request->sectionName;
+        $section->section_name = $request->section_name;
 
         if ($section->save()) {
             return response()->json(['message' => 'Successfully stored'])->setStatusCode(200);
@@ -37,7 +41,7 @@ class SectionController extends Controller
     public function update(Request $request, $id)
     {
         $section = Section::find($id);
-        $section->section_name = $request->sectionName;
+        $section->section_name = $request->section_name;
 
         if ($section->save()) {
             return response()->json(['message' => 'Successfully updated'])->setStatusCode(200);
